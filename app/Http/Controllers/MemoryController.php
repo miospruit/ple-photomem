@@ -43,21 +43,18 @@ class MemoryController extends Controller
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'description' => 'required',
         ]);
-        $path = $request->file('image');
-        $a = $path->store('public/images');
-        $t = new LabelDetection;
-        // $memory = new Memory;
-        // $memory->title = $request->title;
-        // $memory->description = $request->description;
-        // $memory->image = $path;
-        // $memory->save();
-        $labels = $t::tags($path->get());
-        dd($labels);
-
-        // todo: fire event
+        $image = $request->file('image');
+        $image->store('public/images');
+        $detectornator = new LabelDetection;
+        $memory = new Memory;
+        $memory->title = $request->title;
+        $memory->description = $request->description;
+        $memory->image = $image;
+        $memory->save();
+        $labels = $detectornator::tags($image->get());
 
         return redirect()->route('memory.index')
-                        ->with('success','memory has been created successfully.');
+                        ->with('success','memory has been created successfully.', $labels);
                         //ToDo: add return to detail page with tags. Make user select tags and submit from there to the database.
     }
 
