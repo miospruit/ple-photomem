@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Memory;
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use App\Library\LabelDetection;
 
 class MemoryController extends Controller
 {
@@ -41,15 +43,22 @@ class MemoryController extends Controller
             'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'description' => 'required',
         ]);
-        $path = $request->file('image')->store('public/images');
-        $memory = new Memory;
-        $memory->title = $request->title;
-        $memory->description = $request->description;
-        $memory->image = $path;
-        $memory->save();
-     
+        $path = $request->file('image');
+        $a = $path->store('public/images');
+        $t = new LabelDetection;
+        // $memory = new Memory;
+        // $memory->title = $request->title;
+        // $memory->description = $request->description;
+        // $memory->image = $path;
+        // $memory->save();
+        $labels = $t::tags($path->get());
+        dd($labels);
+
+        // todo: fire event
+
         return redirect()->route('memory.index')
                         ->with('success','memory has been created successfully.');
+                        //ToDo: add return to detail page with tags. Make user select tags and submit from there to the database.
     }
 
     /**
@@ -87,7 +96,7 @@ class MemoryController extends Controller
             'title' => 'required',
             'description' => 'required',
         ]);
-        
+
         $memory = Memory::find($id);
         if($request->hasFile('image')){
             $request->validate([
@@ -99,7 +108,7 @@ class MemoryController extends Controller
         $memory->title = $request->title;
         $memory->description = $request->description;
         $memory->save();
-    
+
         return redirect()->route('memory.index')
                         ->with('success','Memory updated successfully');
     }
@@ -113,7 +122,7 @@ class MemoryController extends Controller
     public function destroy(Memory $memory)
     {
         $memory->delete();
-    
+
         return redirect()->route('memory.index')
                         ->with('success','Memory has been deleted successfully');
     }
