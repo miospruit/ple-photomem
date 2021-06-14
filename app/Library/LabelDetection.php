@@ -11,15 +11,14 @@ class LabelDetection implements Vision {
      */
     public static function tags($image): array
     {
+        # auth
         $config = base_path('key.json');
         if (!file_exists($config)) {
             throw new Exception("File '$config' not found for google vision");
         }
-        $imageAnnotator = new ImageAnnotatorClient(
-           [
+        $imageAnnotator = new ImageAnnotatorClient([
                'credentials' => base_path('key.json')
-           ]
-        );
+           ]);
 
         # annotate the image
         try {
