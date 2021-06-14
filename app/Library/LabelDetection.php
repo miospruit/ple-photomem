@@ -11,10 +11,13 @@ class LabelDetection implements Vision {
      */
     public static function tags($image): array
     {
-        // dd(fopen(__DIR__ . '\first-grove-316710-76cf1e81a4b1.json', "r"));
+        $config = base_path('key.json');
+        if (!file_exists($config)) {
+            throw new Exception("File '$config' not found for google vision");
+        }
         $imageAnnotator = new ImageAnnotatorClient(
            [
-               'credentials' => __DIR__ . '\first-grove-316710-76cf1e81a4b1.json'
+               'credentials' => base_path('key.json')
            ]
         );
 
