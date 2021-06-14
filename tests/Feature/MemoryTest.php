@@ -20,7 +20,6 @@ class MemoryTest extends TestCase
     {
 
         Storage::fake('images');
-
         $file = UploadedFile::fake()->image('testimage.jpg');
 
         $response = $this->followingRedirects()->post('/memory', [
