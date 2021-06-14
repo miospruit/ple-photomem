@@ -15,6 +15,6 @@ class tag extends Model
 
     public function memory()
     {
-        return $this->morphedByMany(Memory::class, 'taggable');
+        return $this->belongsToMany(Memory::class);
     }
 }

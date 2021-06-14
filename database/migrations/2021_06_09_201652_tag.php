@@ -13,11 +13,18 @@ class Tag extends Migration
      */
     public function up()
     {
-        Schema::create('tag', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->timestamp('created_at')->nullable();
+            $table->timestamps();
         });
+
+        Schema::create('memory_tag', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('memory_id')->unsigned();
+            $table->integer('tag_id')->unsigned();
+        });
+
     }
 
     /**

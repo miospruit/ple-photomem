@@ -52,6 +52,12 @@ class MemoryController extends Controller
         $memory->image = $image;
         $memory->save();
         $labels = $detectornator::tags($image->get());
+        foreach($labels as $label){
+            $tag = Tag::updateOrCreate(
+                ['name' => $label]
+            );
+            $memory->tags()->attach($tag);
+        }
 
         return redirect()->route('memory.index')
                         ->with('success','memory has been created successfully.', $labels);
