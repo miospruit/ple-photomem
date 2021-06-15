@@ -16,7 +16,7 @@ class MemoryController extends Controller
      */
     public function index(Request $request)
     {
-        $s = $request->input('search');
+        $s = $request->input('term');
         $q = Memory::with('tags');
         if ($s) {
            $q = $q->where('title', 'like', '%' . $s . '%')->orWhere('description',  'like', '%' . $s . '%');
