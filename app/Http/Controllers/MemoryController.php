@@ -16,7 +16,7 @@ class MemoryController extends Controller
      */
     public function index()
     {
-        $data['memory'] = Memory::orderBy('id', 'desc')->paginate(5);
+        $data['memory'] = Memory::with('tags')->get();
         return view('memory.index', $data);
     }
 
@@ -44,12 +44,12 @@ class MemoryController extends Controller
             'description' => 'required',
         ]);
         $image = $request->file('image');
-        $image->store('public/images');
+        $path = $image->store('public/images');
         $detectornator = new LabelDetection;
         $memory = new Memory;
         $memory->title = $request->title;
         $memory->description = $request->description;
-        $memory->image = $image;
+        $memory->image = $path;
         $memory->save();
         $labels = $detectornator::tags($image->get());
         foreach($labels as $label){
@@ -59,8 +59,10 @@ class MemoryController extends Controller
             $memory->tags()->attach($tag);
         }
 
+        $tags = $memory->tags();
+
         return redirect()->route('memory.index')
-                        ->with('success','memory has been created successfully.', $labels);
+                        ->with('success','memory has been created successfully.', $tags);
                         //ToDo: add return to detail page with tags. Make user select tags and submit from there to the database.
     }
 

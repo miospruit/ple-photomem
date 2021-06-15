@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class memory extends Model
+class Memory extends Model
 {
     public $table = 'memory';
+    protected $with = ['tags'];
     use HasFactory;
 
     protected $fillable = [
@@ -23,6 +24,7 @@ class memory extends Model
 
     public function people()
     {
-        return $this->hasMany(People::class);
+        return $this->belongsToMany(People::class);
     }
+
 }
