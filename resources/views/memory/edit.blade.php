@@ -69,7 +69,7 @@
 <main>
     <div class="card" style="">
         <img src="{{ Storage::url($memory->image) }}" class="card-img-top" alt="...">
-        <div class="card-body">`
+        <div class="card-body">
             @foreach ($memory->tags as $tag)
                 <span class="badge bg-secondary">{{$tag->name}}<a href="{{route('delete-tag', ['memory' => $memory, 'tag' => $tag])}}" class="badge">X</a></span>
             @endforeach
