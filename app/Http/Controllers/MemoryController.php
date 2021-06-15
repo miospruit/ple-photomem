@@ -14,9 +14,18 @@ class MemoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['memory'] = Memory::with('tags')->get();
+        $s = $request->input('search');
+        $q = Memory::with('tags');
+        if ($s) {
+           $q = $q->where('title', 'like', '%' . $s . '%')->orWhere('description',  'like', '%' . $s . '%');
+
+           $q = $q->orWhereHas('tags', function ($query) use($s) {
+                 return $query->where('name', 'like', '%' . $s . '%');
+            });
+        }
+        $data['memory'] = $q->get();
         return view('memory.index', $data);
     }
 
