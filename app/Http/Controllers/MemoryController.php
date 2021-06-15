@@ -16,6 +16,7 @@ class MemoryController extends Controller
      */
     public function index(Request $request)
     {
+        //magic
         $s = $request->input('term');
         $q = Memory::with('tags');
         if ($s) {
@@ -104,14 +105,14 @@ class MemoryController extends Controller
      * @param  \App\Models\Memory  $memory
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Memory $memory, Id $id)
+    public function update(Request $request, Memory $memory)
     {
         $request->validate([
             'title' => 'required',
             'description' => 'required',
         ]);
 
-        $memory = Memory::find($id);
+        // $memory = Memory::find($id);
         if($request->hasFile('image')){
             $request->validate([
               'image' => 'required|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -121,7 +122,15 @@ class MemoryController extends Controller
         }
         $memory->title = $request->title;
         $memory->description = $request->description;
+
         $memory->save();
+        foreach (explode(',', $request->tags) as $tag) {
+            $newTag = Tag::firstOrCreate(
+                ['name' => $tag]
+            );
+
+            $memory->tags()->attach($newTag);
+        }
 
         return redirect()->route('memory.index')
                         ->with('success','Memory updated successfully');

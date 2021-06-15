@@ -69,17 +69,30 @@
 <main>
     <div class="card" style="">
         <img src="{{ Storage::url($memory->image) }}" class="card-img-top" alt="...">
-        <div class="card-body">
+        <div class="card-body">`
+            @foreach ($memory->tags as $tag)
+                <span class="badge bg-secondary">{{$tag->name}}<a href="{{route('delete-tag', ['memory' => $memory, 'tag' => $tag])}}" class="badge">X</a></span>
+            @endforeach
             <h5 class="card-title">{{$memory->title}}</h5>
             <p class="card-text">{{$memory->description}}</p>
             <form action="{{ route('memory.update',$memory->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
-            @method('PUT')  
+            @method('PUT')
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Post Title:</strong>
                         <input type="text" name="title" value="{{ $memory->title }}" class="form-control" placeholder="Post Title">
                         @error('title')
+                        <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Add Tag:</strong>
+                        <label class="form-label secondery">for multiple tags, use comma seperation.</label>
+                        <input type="text" name="tags" value="" class="form-control" placeholder="Tag,Tag,Tags">
+                        @error('tags')
                         <div class="alert alert-danger mt-1 mb-1">{{ $message }}</div>
                         @enderror
                     </div>
